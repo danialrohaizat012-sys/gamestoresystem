@@ -37,7 +37,7 @@ Owner-only **backdated mode** lets you migrate old paper/Excel records; such ent
 
 ## Rebranding for a new store
 
-Settings → **Store & brand**: name, legal name, SSM no., address, logo letters, brand colour, receipt footer. Then Settings → **Data & backup → Go live** clears demo transactions and locks the reset.
+Settings → **Store & brand**: name, legal name, SSM no., address, receipt footer, and the **Logo studio** — pick a pixel-art mark (anchor, gamepad, ghost, crown, rocket), use letters, or upload the store's own logo; choose two brand colours. The logo and colours flow into the sidebar, login screen, receipts and browser icon. Then Settings → **Data & backup → Go live** clears demo transactions and locks the reset.
 
 ## Architecture
 

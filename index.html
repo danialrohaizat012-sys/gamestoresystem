@@ -11,17 +11,17 @@
   <link rel="apple-touch-icon" href="assets/icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Silkscreen&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-  <div id="splash"><div class="logo xl">A</div></div>
+  <div id="splash"><div class="splash-mark"></div></div>
 
   <section id="login" class="hidden"></section>
 
   <div id="app" class="hidden">
     <aside class="sidebar">
-      <div class="brand"><div class="logo" data-brand-logo>PH</div><div><strong data-brand-name>Store</strong><span data-brand-tagline></span></div></div>
+      <div class="brand"><span data-brand-logo></span><div class="brand-text"><span data-brand-wordmark></span><small class="pixel-tag">POS · Game Store</small></div></div>
       <nav id="sidebarNav"></nav>
       <div class="user-box" id="userBox"></div>
     </aside>
@@ -46,6 +46,7 @@
 
   <script src="js/core/config.js"></script>
   <script src="js/ui/icons.js"></script>
+  <script src="js/ui/brand.js"></script>
   <script src="js/core/utils.js"></script>
   <script src="js/core/db.js"></script>
   <script src="js/core/services.js"></script>

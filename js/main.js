@@ -23,10 +23,15 @@
     const s = S.settings();
     const root = document.documentElement;
     root.style.setProperty('--accent', s.accent || '#7c5cff');
+    root.style.setProperty('--accent2', s.accent2 || '#22d3ee');
     document.title = `${s.store_name} · ${App.config.appName}`;
-    U.$$('[data-brand-name]').forEach((el) => (el.textContent = s.store_name));
-    U.$$('[data-brand-logo]').forEach((el) => (el.textContent = s.logo_text || U.initials(s.store_name)));
+    const sig = JSON.stringify([s.store_name, s.logo_mode, s.logo_icon, s.logo_text, s.accent, s.accent2, (s.logo_image || '').length, s.tagline]);
+    if (App._brandSig === sig) return;
+    App._brandSig = sig;
+    U.$$('[data-brand-wordmark]').forEach((el) => (el.innerHTML = App.brand.wordmark(s)));
+    U.$$('[data-brand-logo]').forEach((el) => (el.innerHTML = App.brand.mark('', s)));
     U.$$('[data-brand-tagline]').forEach((el) => (el.textContent = s.tagline || ''));
+    App.brand.favicon(s);
   };
   const setTheme = (t) => {
     document.documentElement.dataset.theme = t;
@@ -47,18 +52,31 @@
     let chosen = null, pin = '';
     const draw = () => {
       el.innerHTML = `
-        <div class="login-card">
-          <div class="login-brand"><div class="logo xl">${esc(s.logo_text)}</div><div><h1>${esc(s.store_name)}</h1><p>${esc(s.tagline)}</p></div></div>
-          ${!chosen ? `
-            <h2>Who's on shift?</h2>
-            <div class="staff-grid">${staff.map((x) => `<button class="staff-tile" data-id="${x.id}"><span class="avatar lg" style="background:${esc(x.color || 'var(--accent)')}">${esc(U.initials(x.name))}</span><strong>${esc(x.name)}</strong><span>${esc(App.ROLES[x.role]?.label || x.role)}</span></button>`).join('')}</div>
-            ${!s.go_live_at ? `<p class="login-hint">${I('info')} Demo PINs — Owner 1234 · Manager 2222 · Cashier 0000 · Technician 1111</p>` : ''}`
-          : `
-            <button class="btn ghost sm" id="lgBack">${I('chevronLeft')} Back</button>
-            <div class="pin-who"><span class="avatar lg" style="background:${esc(chosen.color || 'var(--accent)')}">${esc(U.initials(chosen.name))}</span><div><strong>${esc(chosen.name)}</strong><span>${esc(App.ROLES[chosen.role]?.label)}</span></div></div>
-            <div class="pin-dots">${[0, 1, 2, 3].map((i) => `<i class="${i < pin.length ? 'on' : ''}"></i>`).join('')}</div>
-            <div class="pin-pad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, '⌫'].map((k) => `<button data-k="${k}">${k}</button>`).join('')}</div>`}
-          <p class="login-foot">${esc(App.config.appName)} v${App.config.version} · ${esc(S.adapter.name)}</p>
+        <div class="login-shell">
+          <section class="login-hero">
+            <div class="pixel-field" aria-hidden="true">${Array.from({ length: 14 }, (_, i) => `<i style="--x:${(i * 37) % 100};--y:${(i * 53) % 100};--d:${(i % 5) * 0.7}s"></i>`).join('')}</div>
+            <div class="hero-top">${App.brand.mark('hero-mark')}</div>
+            <div class="hero-mid">
+              <span class="pixel-tag">${esc(App.config.appName)} · Game Store OS</span>
+              <h1>${App.brand.wordmark(s, 'xl')}</h1>
+              <p>${esc(s.tagline)}</p>
+              <div class="hero-pills">${[['cart', 'Sell'], ['trade', 'Trade-in'], ['buy', 'Buy-back'], ['wrench', 'Repairs']].map(([ic, l]) => `<span>${I(ic)}${l}</span>`).join('')}</div>
+            </div>
+            <div class="hero-foot">${esc(String(s.address || '').split(/\n/)[0])}${s.phone ? ' · ' + esc(s.phone) : ''}</div>
+          </section>
+          <section class="login-card">
+            <div class="login-mobile-brand">${App.brand.mark()}${App.brand.wordmark(s)}</div>
+            ${!chosen ? `
+              <div><h2>Who's on shift?</h2><p class="muted">Tap your name and enter your PIN</p></div>
+              <div class="staff-grid">${staff.map((x) => `<button class="staff-tile" data-id="${x.id}"><span class="avatar lg" style="background:${esc(x.color || 'var(--accent)')}">${esc(U.initials(x.name))}</span><strong>${esc(x.name)}</strong><span>${esc(App.ROLES[x.role]?.label || x.role)}</span></button>`).join('')}</div>
+              ${!s.go_live_at ? `<p class="login-hint">${I('info')} Demo PINs — Owner 1234 · Manager 2222 · Cashier 0000 · Technician 1111</p>` : ''}`
+            : `
+              <button class="btn ghost sm" id="lgBack">${I('chevronLeft')} Back</button>
+              <div class="pin-who"><span class="avatar lg" style="background:${esc(chosen.color || 'var(--accent)')}">${esc(U.initials(chosen.name))}</span><div><strong>${esc(chosen.name)}</strong><span>${esc(App.ROLES[chosen.role]?.label)}</span></div></div>
+              <div class="pin-dots">${[0, 1, 2, 3].map((i) => `<i class="${i < pin.length ? 'on' : ''}"></i>`).join('')}</div>
+              <div class="pin-pad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, '⌫'].map((k) => `<button data-k="${k}">${k}</button>`).join('')}</div>`}
+            <p class="login-foot">${esc(App.config.appName)} v${App.config.version} · ${esc(S.adapter.name)}</p>
+          </section>
         </div>`;
     };
     const tryPin = () => {
@@ -224,6 +242,7 @@
   /* ---------- Boot ---------- */
   const boot = async () => {
     initTheme();
+    const sp = document.querySelector('.splash-mark'); if (sp) sp.innerHTML = App.brand.pixelSvg('anchor', '#7c5cff', '#22d3ee');
     try {
       await S.init();
       const first = await App.ensureFirstRun();

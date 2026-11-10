@@ -30,16 +30,36 @@
         <label class="field"><span>Phone</span><input name="phone" value="${esc(s.phone)}"></label>
         <label class="field"><span>Email</span><input name="email" value="${esc(s.email)}"></label>
         <label class="field"><span>Website / socials</span><input name="website" value="${esc(s.website)}"></label>
-        <label class="field"><span>Logo letters (1–3)</span><input name="logo_text" maxlength="3" value="${esc(s.logo_text)}"></label>
         <label class="field"><span>Currency symbol</span><input name="currency" value="${esc(s.currency)}"></label>
         <label class="field"><span>Phone country code</span><input name="country_code" value="${esc(s.country_code)}"></label>
-        <div class="field span-2"><span>Brand colour</span><div class="swatches">${ACCENTS.map((c) => `<button type="button" class="swatch ${c === s.accent ? 'on' : ''}" data-c="${c}" style="background:${c}"></button>`).join('')}<input type="color" name="accent" value="${esc(s.accent)}"></div></div>
+        <div class="span-2 logo-studio">
+          <div class="ls-preview" id="lsPrev"></div>
+          <div class="ls-controls">
+            <div class="field"><span>Logo style</span><div class="seg" id="lsMode">${[['pixel', 'Pixel mark'], ['letters', 'Letters'], ['image', 'Upload logo']].map(([k, l]) => `<button type="button" data-mode="${k}" class="${(s.logo_mode || 'pixel') === k ? 'active' : ''}">${l}</button>`).join('')}</div></div>
+            <div class="field ls-pixel"><span>Pixel icon</span><div class="icon-pick">${Object.keys(App.brand.ICONS).map((k) => `<button type="button" data-icon="${k}" class="${(s.logo_icon || 'anchor') === k ? 'on' : ''}" title="${k}">${App.brand.pixelSvg(k, s.accent, s.accent2)}</button>`).join('')}</div></div>
+            <label class="field ls-letters"><span>Logo letters (1–3)</span><input name="logo_text" maxlength="3" value="${esc(s.logo_text)}"></label>
+            <div class="field ls-image"><span>Logo image <small class="muted">(PNG/JPG/SVG, square works best)</small></span><div class="row gap-s"><label class="btn ghost">${App.icon('upload')} Choose file<input type="file" accept="image/*" id="lsFile" hidden></label>${s.logo_image ? '<button type="button" class="btn ghost sm danger-text" id="lsClear">Remove</button>' : ''}</div></div>
+            <input type="hidden" name="logo_mode" value="${esc(s.logo_mode || 'pixel')}"><input type="hidden" name="logo_icon" value="${esc(s.logo_icon || 'anchor')}"><input type="hidden" name="logo_image" value="${esc(s.logo_image || '')}">
+            <div class="field"><span>Brand colours</span><div class="swatches">${ACCENTS.map((c) => `<button type="button" class="swatch ${c === s.accent ? 'on' : ''}" data-c="${c}" style="background:${c}"></button>`).join('')}<input type="color" name="accent" value="${esc(s.accent)}" title="Primary"><input type="color" name="accent2" value="${esc(s.accent2 || '#22d3ee')}" title="Secondary"></div></div>
+          </div>
+        </div>
         <label class="field"><span>Receipt paper</span><select name="receipt_paper">${UI.options([['80mm', 'Thermal 80mm'], ['a4', 'A4 / Letter']], s.receipt_paper)}</select></label>
         <label class="field span-2"><span>Receipt footer / terms</span><textarea name="receipt_footer" rows="3">${esc(s.receipt_footer)}</textarea></label>
       </form><div class="row end"><button class="btn primary" id="sfSave">Save store profile</button></div></section>
       <section class="card"><div class="card-head"><div><h3>Live preview</h3><p>Receipt header</p></div></div><div id="sfPrev" class="doc-preview small"></div></section></div>`;
     const form = body.querySelector('#sf');
-    const prev = () => { const d = formData(form); body.querySelector('#sfPrev').innerHTML = `<div class="doc paper-80mm"><header class="doc-head"><div class="doc-logo" style="background:${esc(d.accent)}">${esc(d.logo_text)}</div><div><h2>${esc(d.store_name)}</h2><p>${esc(d.legal_name)} · ${esc(d.registration_no)}</p><p>${esc(d.address).replace(/\n/g, '<br>')}</p><p>${esc(d.phone)}</p></div></header><footer class="doc-foot">${esc(d.receipt_footer)}</footer></div>`; document.documentElement.style.setProperty('--accent', d.accent); };
+    const prev = () => {
+      const d = formData(form);
+      const studio = body.querySelector('.logo-studio');
+      studio.dataset.mode = d.logo_mode;
+      body.querySelector('#lsPrev').innerHTML = `<div class="ls-card">${App.brand.mark('xl', d)}${App.brand.wordmark(d, 'lg')}<span class="pixel-tag">${esc(d.tagline)}</span></div><div class="ls-small"><div class="ls-chip">${App.brand.mark('', d)}<span>${App.brand.wordmark(d)}</span></div><div class="ls-chip light">${App.brand.mark('', d)}<span>${App.brand.wordmark(d)}</span></div></div>`;
+      body.querySelectorAll('[data-icon]').forEach((b) => (b.innerHTML = App.brand.pixelSvg(b.dataset.icon, d.accent, d.accent2)));
+      document.documentElement.style.setProperty('--accent2', d.accent2);
+      body.querySelector('#sfPrev').innerHTML = `<div class="doc paper-80mm"><header class="doc-head"><div class="doc-logo">${App.brand.mark('', d)}</div><div><h2>${esc(d.store_name)}</h2><p>${esc(d.legal_name)} · ${esc(d.registration_no)}</p><p>${esc(d.address).replace(/\n/g, '<br>')}</p><p>${esc(d.phone)}</p></div></header><footer class="doc-foot">${esc(d.receipt_footer)}</footer></div>`; document.documentElement.style.setProperty('--accent', d.accent); };
+    body.querySelector('#lsMode').onclick = (e) => { const b = e.target.closest('[data-mode]'); if (!b) return; form.logo_mode.value = b.dataset.mode; body.querySelectorAll('[data-mode]').forEach((x) => x.classList.toggle('active', x === b)); prev(); };
+    body.querySelectorAll('[data-icon]').forEach((b) => (b.onclick = () => { form.logo_icon.value = b.dataset.icon; body.querySelectorAll('[data-icon]').forEach((x) => x.classList.toggle('on', x === b)); prev(); }));
+    body.querySelector('#lsFile').onchange = async (e) => { try { form.logo_image.value = await App.brand.readLogo(e.target.files[0]); form.logo_mode.value = 'image'; body.querySelectorAll('[data-mode]').forEach((x) => x.classList.toggle('active', x.dataset.mode === 'image')); prev(); U.toast('Logo loaded — press Save', 'success'); } catch (er) { U.toast(er.message, 'danger'); } };
+    body.querySelector('#lsClear')?.addEventListener('click', () => { form.logo_image.value = ''; form.logo_mode.value = 'pixel'; body.querySelectorAll('[data-mode]').forEach((x) => x.classList.toggle('active', x.dataset.mode === 'pixel')); prev(); });
     form.oninput = prev; prev();
     body.querySelectorAll('[data-c]').forEach((b) => (b.onclick = () => { form.accent.value = b.dataset.c; body.querySelectorAll('.swatch').forEach((x) => x.classList.toggle('on', x === b)); prev(); }));
     body.querySelector('#sfSave').onclick = () => saveSettings(formData(form));

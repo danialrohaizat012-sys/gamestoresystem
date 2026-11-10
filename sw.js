@@ -1,7 +1,7 @@
 /* Arcadia POS service worker — offline app shell (data lives in localStorage / Supabase) */
-const CACHE = 'arcadia-pos-v1';
+const CACHE = 'arcadia-pos-v2';
 const SHELL = ['./', './index.html', './css/app.css', './manifest.webmanifest', './assets/icon.svg',
-  './js/core/config.js', './js/ui/icons.js', './js/core/utils.js', './js/core/db.js', './js/core/services.js', './js/core/seed.js',
+  './js/core/config.js', './js/ui/icons.js', './js/ui/brand.js', './js/core/utils.js', './js/core/db.js', './js/core/services.js', './js/core/seed.js',
   './js/ui/ui.js', './js/ui/charts.js', './js/ui/documents.js', './js/main.js',
   ...['dashboard', 'pos', 'buy-trade', 'repairs', 'after-sales', 'inventory', 'purchases', 'consignment', 'stock-take', 'transactions', 'customers', 'reports', 'shift', 'settings'].map((p) => `./js/pages/${p}.js`)];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())); });

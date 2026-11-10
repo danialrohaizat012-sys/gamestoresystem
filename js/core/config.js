@@ -83,7 +83,11 @@
     email: 'hello@pixelharbor.games',
     website: 'pixelharbor.games',
     logo_text: 'PH',
+    logo_mode: 'pixel', // pixel | letters | image
+    logo_icon: 'anchor',
+    logo_image: '',
     accent: '#7c5cff',
+    accent2: '#22d3ee',
     currency: 'RM',
     country_code: '60',
     receipt_paper: '80mm',

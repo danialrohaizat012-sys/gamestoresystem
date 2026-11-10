@@ -82,7 +82,7 @@
     const s = store();
     return `<article class="doc paper-${s.receipt_paper}">
       <header class="doc-head">
-        <div class="doc-logo" style="background:${esc(s.accent)}">${esc(s.logo_text || U.initials(s.store_name))}</div>
+        <div class="doc-logo">${App.brand.mark('', s)}</div>
         <div><h2>${esc(s.store_name)}</h2><p>${esc(s.legal_name)}${s.registration_no ? ` · ${esc(s.registration_no)}` : ''}</p><p>${esc(s.address).replace(/\n/g, '<br>')}</p><p>${esc(s.phone)}${s.email ? ' · ' + esc(s.email) : ''}</p></div>
       </header>
       <div class="doc-title"><h3>${esc(d.title)}</h3>${d.status === 'void' ? '<span class="doc-void">VOID</span>' : ''}${d.backdated ? '<span class="doc-void soft">BACKDATED</span>' : ''}</div>

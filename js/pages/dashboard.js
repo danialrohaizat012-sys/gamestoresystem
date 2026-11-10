@@ -36,7 +36,25 @@
         ...S.all('trades').map((x) => ['trade', x, x.balance, 'Trade-in']), ...S.filter('repairs', (r) => r.status === 'collected').map((x) => ['repair', x, x.final_price, 'Repair']),
       ].sort((a, b) => (b[1].collected_at || b[1].at).localeCompare(a[1].collected_at || a[1].at)).slice(0, 7);
 
+      const hr = new Date().getHours();
+      const greet = hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening';
+      const [t0, t1] = svc.periodRange('today');
+      const today = svc.metrics(t0, t1);
+      const st = S.settings();
       el.innerHTML = `
+        <section class="hero">
+          <div class="hero-art" aria-hidden="true">${App.brand.pixelSvg(st.logo_icon || 'anchor', '#ffffff', '#ffffff', { tile: false })}</div>
+          <div class="hero-copy">
+            <span class="pixel-tag">${esc(st.store_name)}</span>
+            <h2>${greet}, ${esc(App.session.staff.name.split(' ')[0])} <span class="wave">👋</span></h2>
+            <p>${repairsOpen.length} repairs in progress · ${ready.length} ready for pickup · ${low.length} items low on stock</p>
+          </div>
+          <div class="hero-stats">
+            ${fin ? `<div><span>Today's revenue</span><strong>${U.money(today.revenue)}</strong></div>` : ''}
+            <div><span>Sales today</span><strong>${today.sales.length}</strong></div>
+            ${sh && svc.can('shift') ? `<div><span>Cash in drawer</span><strong>${U.money(svc.shiftSummary(sh).expected)}</strong></div>` : ''}
+          </div>
+        </section>
         ${!sh && svc.can('shift') ? `<div class="banner warning">${I('wallet')}<div><strong>No shift is open</strong><span>Open the cash drawer before taking cash payments.</span></div><a class="btn sm primary" href="#/shift">Open shift</a></div>` : ''}
         <div class="quick-actions">
           ${[['pos', 'New sale', 'cart', 'F2'], ['trade', 'Trade-in', 'trade'], ['buy', 'Buy item', 'buy'], ['repairs', 'Repair ticket', 'wrench']].filter(([id]) => svc.can(id)).map(([id, l, ic, k]) => `<a class="qa" href="#/${id}"><span class="qa-ico">${I(ic)}</span><strong>${l}</strong>${k ? `<kbd>${k}</kbd>` : ''}</a>`).join('')}
