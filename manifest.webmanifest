@@ -1,0 +1,10 @@
+{
+  "name": "Arcadia POS",
+  "short_name": "Arcadia",
+  "description": "All-in-one point of sale for game stores",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0c12",
+  "theme_color": "#0b0c12",
+  "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

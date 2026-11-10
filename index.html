@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0c12">
+  <meta name="description" content="Arcadia POS — all-in-one point of sale for game stores: sales, trade-in, buy-back, repairs, consignment and inventory.">
+  <title>Arcadia POS</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="splash"><div class="logo xl">A</div></div>
+
+  <section id="login" class="hidden"></section>
+
+  <div id="app" class="hidden">
+    <aside class="sidebar">
+      <div class="brand"><div class="logo" data-brand-logo>PH</div><div><strong data-brand-name>Store</strong><span data-brand-tagline></span></div></div>
+      <nav id="sidebarNav"></nav>
+      <div class="user-box" id="userBox"></div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn" id="menuBtn" aria-label="Menu"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+        <div class="top-title"><h2 id="pageTitle">Dashboard</h2><p id="pageSub"></p></div>
+        <button class="search-trigger" id="paletteBtn" aria-label="Search"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Search anything…</span><kbd>Ctrl K</kbd></button>
+        <button class="icon-btn hidden" id="backdateBtn" title="Backdated entry (owner)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button>
+        <button class="chip" id="shiftChip"></button>
+        <button class="icon-btn" id="themeBtn" aria-label="Toggle theme"></button>
+      </header>
+      <div class="backdate-bar hidden" id="backdateBar"></div>
+      <main id="view" class="view"></main>
+    </div>
+  </div>
+  <nav id="mobileNav" aria-label="Mobile navigation"></nav>
+  <div id="scrim" onclick="document.body.classList.remove('cart-open')"></div>
+
+  <!-- Supabase: uncomment when switching js/core/config.js backend to 'supabase' -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script> -->
+
+  <script src="js/core/config.js"></script>
+  <script src="js/ui/icons.js"></script>
+  <script src="js/core/utils.js"></script>
+  <script src="js/core/db.js"></script>
+  <script src="js/core/services.js"></script>
+  <script src="js/core/seed.js"></script>
+  <script src="js/ui/ui.js"></script>
+  <script src="js/ui/charts.js"></script>
+  <script src="js/ui/documents.js"></script>
+  <script src="js/pages/dashboard.js"></script>
+  <script src="js/pages/pos.js"></script>
+  <script src="js/pages/buy-trade.js"></script>
+  <script src="js/pages/repairs.js"></script>
+  <script src="js/pages/after-sales.js"></script>
+  <script src="js/pages/inventory.js"></script>
+  <script src="js/pages/purchases.js"></script>
+  <script src="js/pages/consignment.js"></script>
+  <script src="js/pages/stock-take.js"></script>
+  <script src="js/pages/transactions.js"></script>
+  <script src="js/pages/customers.js"></script>
+  <script src="js/pages/reports.js"></script>
+  <script src="js/pages/shift.js"></script>
+  <script src="js/pages/settings.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
